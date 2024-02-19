@@ -1,0 +1,159 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box,
+
+}
+
+.screen {
+    display: flex;
+}
+
+.nav-area {
+    flex: 0 0 200px;
+    background-color: #343240;
+}
+
+.nav-area-header {
+    line-height: 30px;
+
+}
+
+.nav-header {
+    font-size: 18px;
+    color: #c5c4c4;
+    padding-left: 30px;
+}
+
+.nav-area-content {
+    padding: 10px;
+}
+
+
+.icon {
+
+    font-size: 25px;
+    color: #c5c4c4;
+}
+
+.menue {
+    font-size: 25px;
+    color: #eeeeee;
+
+
+
+}
+
+
+.content-area {
+    flex: 1 1 auto;
+}
+
+.window {
+
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #343240;
+}
+
+.header {
+
+    line-height: 30px;
+    font-size: 18px;
+    text-align: center;
+}
+h1 {
+    color: #f403fc;
+}
+
+.main {
+    margin: 10px;
+    flex: 1 1 auto;
+    background-color: #e8e6e8;
+}
+
+.chart-box {
+    line-height: 400px;
+    display: flex;
+
+
+}
+
+.chart1 {
+    flex: 0 1 50%;
+
+}
+.chart2 {
+    flex: 0 1 50%;
+
+}
+
+.status-box {
+    padding: 10px;
+    
+
+}
+
+.kachel-row {
+    line-height: 50px;
+    border: 1px solid;
+    display: flex;
+    justify-content: space-around;
+    padding: 15px 10px;
+    font-size: 30px;
+}
+
+.kachel-card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+    transition: 0.3s;
+    padding: 16px;
+    text-align: center;
+    background-color: #c5c4c4;
+    flex: 0 1 15%;
+}
+
+.bedien-box {
+    display: flex;
+
+
+
+}
+
+.buttons-box {
+    line-height: 50px;
+    flex: 0 1 50%;
+}
+
+.buttons-grid {
+    display: flex;
+    padding: 15px 10px;
+    font-size: 30px;
+
+
+}
+.button-card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+    transition: 0.3s;
+    padding: 16px;
+    text-align: center;
+    background-color: #c5c4c4;
+    flex: 0 1 20%;
+    margin: 10px;
+}
+
+.buttons {
+    font-size: 30px;
+}
+
+
+.info-box {
+    background-color: aqua;
+    flex: 0 1 50%;
+}
+.footer {
+    line-height: 20px;
+
+    color: #f403fc;
+    text-align: center;
+}
