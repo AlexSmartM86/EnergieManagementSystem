@@ -15,7 +15,7 @@
     
     <div class="main">
         <div class="header">
-            <h1>Hier werden die Daten aus Influxdb gelesen und angezeigt</h1>
+            <h3>Hier werden die Daten aus Influxdb gelesen und angezeigt</h3>
         </div>
         <div class="content">
             <div class="controll">
@@ -60,24 +60,7 @@
         </div>
         <div class="footer">footer</div>
     </div>
-    <h2 id="werts"></h2>
 
-    
-
-
-    <script>
-        function fetchData() {
-            fetch('/leistung')
-                .then(response => response.json())
-                .then(data => {
-                    const wert = data.values;
-                    var strom = document.getElementById('wert');
-                    strom.innerHTML = `Aktuelle Leistung: ${data} Watt`;
-                });
-        }
-        // Daten alle 10 Sekunden abrufen
-        setInterval(fetchData, 10000);
-    </script>
 
     <script>
         function fetchData() {
