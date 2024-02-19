@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chart from Flask Data</title>
+    <link href="{{ url_for('static', filename='stylesheets/style.css') }}" rel="stylesheet" type="text/css"/>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    
+    <div class="main">
+        <div class="header">
+            <h1>Hier werden die Daten aus Influxdb gelesen und angezeigt</h1>
+        </div>
+        <div class="content">
+            <div class="controll">
+                <div class="controll_buttons">Control</div>
+                <div class="info">Info</div>
+            </div>
+            <div class="display">
+                <div class="charts_screen">
+                    <div class="chart-box">
+                        <div class="chart1">
+                            <canvas class="chart-awattar" id="chart-awattar"></canvas>
+                        </div>
+                        <div class="chart2">
+                            <canvas class="solar-chart" id="solar-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+                <div class="livedata">
+                    <div class="cards">
+                        <div class="pv [ card ]" id="pv">pv</div>
+                        <div class="from_grid [ card ]" id="bezug">bezug</div>
+                        <div class="to_grid [ card ]" id="einspeisung">einspeisung</div>
+                        <div class="consumption [ card ]">Verbrauch</div>
+                        <div class="battery [ card ]">Batterie 100%</div>
+                    </div>
+                </div>
+                <div class="datepicker">
+                    <form id="dateForm">
+                        <label for="start_date">Startdatum und -zeit:</label>
+                        <input type="datetime-local" id="start_date" name="start_date">
+                        <br>
+                        <label for="end_date">Enddatum und -zeit:</label>
+                        <input type="datetime-local" id="end_date" name="end_date">
+                        <br>
+                        <button type="submit">Zeitbereich aktualisieren</button>
+                    </form>
+                </div>
+                <div class="main_chart">
+                    <canvas class="myChart" id="myChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="footer">footer</div>
+    </div>
+    <h2 id="werts"></h2>
+
+    
+
+
+    <script>
+        function fetchData() {
+            fetch('/leistung')
+                .then(response => response.json())
+                .then(data => {
+                    const wert = data.values;
+                    var strom = document.getElementById('wert');
+                    strom.innerHTML = `Aktuelle Leistung: ${data} Watt`;
+                });
+        }
+        // Daten alle 10 Sekunden abrufen
+        setInterval(fetchData, 10000);
+    </script>
+
+    <script>
+        function fetchData() {
+            fetch('/pv-leistung')
+                .then(response => response.json())
+                .then(data => {
+                    const wert = data.values;
+                    var strom = document.getElementById('pv');
+                    strom.innerHTML = `Aktuelle PV-Leistung: ${data} Watt`;
+                });
+        }
+        // Daten alle 10 Sekunden abrufen
+        setInterval(fetchData, 10000);
+    </script>
+
+    <script>
+        function fetchData() {
+            fetch('/bezug')
+                .then(response => response.json())
+                .then(data => {
+                    const wert = data.values;
+                    var strom = document.getElementById('bezug');
+                    strom.innerHTML = `Aktueller Bezug: ${data} Watt`;
+                });
+        }
+        // Daten alle 10 Sekunden abrufen
+        setInterval(fetchData, 10000);
+    </script>
+
+    <script>
+        function fetchData() {
+            fetch('/einspeisung')
+                .then(response => response.json())
+                .then(data => {
+                    const wert = data.values;
+                    var strom = document.getElementById('einspeisung');
+                    strom.innerHTML = `Aktuelle Einspeisung: ${data} Watt`;
+                });
+        }
+        // Daten alle 10 Sekunden abrufen
+        setInterval(fetchData, 10000);
+    </script>
+
+
+
+    <script src="static\javascript\chart_bar_awattar.js"></script>
+    <script src="static\javascript\chart_bar_solar.js"></script>
+    <script src="static\javascript\bar_chart_influxdb.js"></script>
+    <script src="static\javascript\bar_chart_influxdb_var_time.js"></script>
+    
+</body>
+</html>
