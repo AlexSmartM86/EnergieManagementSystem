@@ -15,7 +15,7 @@
     
     <div class="main">
         <div class="header">
-            <h3>Hier werden die Daten aus Influxdb gelesen und angezeigt</h3>
+            <a>Hier werden die Daten aus Influxdb gelesen und angezeigt</a>
         </div>
         <div class="content">
             <div class="controll">
@@ -26,10 +26,10 @@
                 <div class="charts_screen">
                     <div class="chart-box">
                         <div class="chart1">
-                            <canvas class="chart-awattar" id="chart-awattar"></canvas>
+                            <canvas class="chart-awattar" id="chart-awattar" height="100vh"></canvas>
                         </div>
                         <div class="chart2">
-                            <canvas class="solar-chart" id="solar-chart"></canvas>
+                            <canvas class="solar-chart" id="solar-chart" height="100vh"></canvas>
                         </div>
                     </div>
                 </div>
@@ -44,17 +44,17 @@
                 </div>
                 <div class="datepicker">
                     <form id="dateForm">
-                        <label for="start_date">Startdatum und -zeit:</label>
+                        <label for="start_date">Start:</label>
                         <input type="datetime-local" id="start_date" name="start_date">
-                        <br>
-                        <label for="end_date">Enddatum und -zeit:</label>
+
+                        <label for="end_date">Ende:</label>
                         <input type="datetime-local" id="end_date" name="end_date">
-                        <br>
+    
                         <button type="submit">Zeitbereich aktualisieren</button>
                     </form>
                 </div>
                 <div class="main_chart">
-                    <canvas class="myChart" id="myChart"></canvas>
+                    <canvas class="myChart" id="myChart" height="100vh"></canvas>
                 </div>
             </div>
         </div>
