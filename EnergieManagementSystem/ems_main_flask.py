@@ -1,6 +1,8 @@
-from flask import Flask, render_template, render_template_string, jsonify
+from flask import Flask, render_template, render_template_string, jsonify, request
 from pyModbusTCP.client import ModbusClient
 import time
+import json
+
 
 app = Flask(__name__)
 
@@ -9,6 +11,31 @@ def start():
     print("Start")
 
     return render_template('home.html')
+
+@app.route("/config", methods=['POST', 'GET'])
+def config():
+    if request.method == 'POST':
+        latitude = request.form['latitude']
+        longitude = request.form['longitude']
+        winkel = request.form['winkel']
+        kwp = request.form['kwp']
+        azimuth = request.form['azimuth']
+        modbus_host = request.form['modbus_host']
+        modbus_port = int(request.form['modbus_port'])
+
+        data = {}
+        data["latitude"] = latitude
+        data["longitude"] = longitude
+        data["winkel"] = winkel
+        data["kwp"] = kwp
+        data["azimuth"] = azimuth
+        data["Modbus_host"] = modbus_host
+        data["Modbus_port"] = modbus_port
+
+        with open("config.json", "w") as write_file:
+            json.dump(data, write_file)
+
+    return render_template('config.html')
 
 
 # Diese Funktion schickt ein Befehl an Modbus

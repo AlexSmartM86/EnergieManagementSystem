@@ -157,3 +157,35 @@ h1 {
     color: #f403fc;
     text-align: center;
 }
+
+
+
+.wrapper {
+    list-style-type: none;
+    padding: 5px;
+    border-radius: 3px;
+}
+
+.form-row {
+    display: flex;
+}
+
+.form-row > label {
+    padding: 5px;
+    flex: 1;
+    margin: 2px;
+}
+
+.form-row > input {
+    flex: 5;
+    margin: 2px;
+}
+
+.form-row > button {
+    padding: 5px;
+    flex: auto;
+    margin: 2px;
+    background: gray;
+    color: white;
+    border: 0;
+}

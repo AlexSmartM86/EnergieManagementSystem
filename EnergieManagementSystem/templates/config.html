@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energiemanagementsystem</title>
+    <link href="{{ url_for('static', filename='stylesheets/style.css') }}" rel="stylesheet" type="text/css"/>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="screen">
+        <div class="nav-area">
+            <div class="nav-area-header">
+                <span class="nav-header">EMS</span>
+            </div>
+            <div class="nav-area-content">
+                <ul>
+                    <li>
+                        <iconify-icon class="icon" icon="humbleicons:desktop"
+                        onclick="window.location.href='http://127.0.0.1:5000';"></iconify-icon>
+                        <span class="menue"></span>
+                    </li>
+                    <li>
+                        <iconify-icon class="icon" icon="mdi:chart-line"></iconify-icon>
+                        <span class="menue"></span>
+                    </li>
+                    <li><iconify-icon class="icon" icon="material-symbols:settings" 
+                        onclick="window.location.href='http://127.0.0.1:5000/config';"></iconify-icon>
+                        <span class="menue"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-area">
+            <div class="window">
+                <div class="header">
+                    <h1>Konfiguration</h1>
+                </div>
+                <div class="main">
+                    <div class="forma">
+                        <form action="/config" method="post">
+                            <ul class="wrapper">
+                                <li class="form-row">
+                                    <label for="latitude">Latitude</label>
+                                    <input type="text" id="latitude" name="latitude">
+                                </li>
+                                <li class="form-row">
+                                    <label for="longitude">Longitude</label>
+                                    <input type="text" id="longitude" name="longitude">
+                                </li>
+                                <li class="form-row">
+                                    <label for="winkel">Neigungswinkel der Module</label>
+                                    <input type="text" id="winkel" name="winkel">
+                                </li>
+                                <li class="form-row">
+                                    <label for="kwp">Leistung der PV-Anlage in kWp</label>
+                                    <input type="text" id="kwp" name="kwp">
+                                </li>
+                                <li class="form-row">
+                                    <label for="azimuth">Azimuthwinkel vom Gebäude</label>
+                                    <input type="text" id="azimuth" name="azimuth">
+                                </li>
+                                <li class="form-row">
+                                    <label for="modbus_host">Modbus-host</label>
+                                    <input type="text" id="modbus_host" name="modbus_host">
+                                </li>
+                                <li class="form-row">
+                                    <label for="modbus_port">Modbus-port</label>
+                                    <input type="text" id="modbus_port" name="modbus_port">
+                                </li>
+                                <li class="form-row">
+                                    <button type="submit" onclick="alert('Daten wurden in der Configdatei gespeichert!')">Speichern</button>
+                                </li>
+                                <li class="form-row">
+                                    <button type="reset">Reset</button>
+                                </li>
+                            </ul>
+                        </form>
+                    </div>
+                </div>
+                <div class="footer">Made by Aleksandr Majer 2024</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+</body>
+</html>
