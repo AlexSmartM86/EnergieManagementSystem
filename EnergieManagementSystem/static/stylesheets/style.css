@@ -2,7 +2,6 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box,
-
 }
 
 .screen {
@@ -16,7 +15,6 @@
 
 .nav-area-header {
     line-height: 30px;
-
 }
 
 .nav-header {
@@ -29,9 +27,7 @@
     padding: 10px;
 }
 
-
 .icon {
-
     font-size: 25px;
     color: #c5c4c4;
 }
@@ -39,18 +35,13 @@
 .menue {
     font-size: 25px;
     color: #eeeeee;
-
-
-
 }
-
 
 .content-area {
     flex: 1 1 auto;
 }
 
 .window {
-
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -58,7 +49,7 @@
 }
 
 .header {
-
+    padding: 10px;
     line-height: 30px;
     font-size: 18px;
     text-align: center;
@@ -76,23 +67,17 @@ h1 {
 .chart-box {
     line-height: 400px;
     display: flex;
-
-
 }
 
 .chart1 {
     flex: 0 1 50%;
-
 }
 .chart2 {
     flex: 0 1 50%;
-
 }
 
 .status-box {
     padding: 10px;
-    
-
 }
 
 .kachel-row {
@@ -115,9 +100,6 @@ h1 {
 
 .bedien-box {
     display: flex;
-
-
-
 }
 
 .buttons-box {
@@ -129,8 +111,6 @@ h1 {
     display: flex;
     padding: 15px 10px;
     font-size: 30px;
-
-
 }
 .button-card {
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
@@ -153,12 +133,9 @@ h1 {
 }
 .footer {
     line-height: 20px;
-
     color: #f403fc;
     text-align: center;
 }
-
-
 
 .wrapper {
     list-style-type: none;

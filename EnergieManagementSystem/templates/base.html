@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Energiemanagementsystem</title>
+    <link href="{{ url_for('static', filename='stylesheets/style.css') }}" rel="stylesheet" type="text/css"/>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="screen">
+        <div class="nav-area">
+            <div class="nav-area-header">
+                <span class="nav-header">EMS</span>
+            </div>
+            <div class="nav-area-content">
+                <ul>
+                    <li>
+                        <iconify-icon class="icon" icon="humbleicons:desktop"
+                        onclick="window.location.href='http://127.0.0.1:5000';"></iconify-icon>
+                        <span class="menue"></span>
+                    </li>
+                    <li>
+                        <iconify-icon class="icon" icon="mdi:chart-line"></iconify-icon>
+                        <span class="menue"></span>
+                    </li>
+                    <li><iconify-icon class="icon" icon="material-symbols:settings" 
+                        onclick="window.location.href='http://127.0.0.1:5000/config';"></iconify-icon>
+                        <span class="menue"></span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="content-area">
+            <div class="window">
+                <div class="header">
+                    <h1>{% block header %}{% endblock %}</h1>
+                </div>
+                <div class="main">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+                <div class="footer">Made by Aleksandr Majer 2024</div>
+            </div>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+</body>
+</html>

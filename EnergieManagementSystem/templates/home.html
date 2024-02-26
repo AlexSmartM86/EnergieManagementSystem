@@ -1,100 +1,67 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Energiemanagementsystem</title>
-    <link href="{{ url_for('static', filename='stylesheets/style.css') }}" rel="stylesheet" type="text/css"/>
-    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-</head>
-<body>
-    <div class="screen">
-        <div class="nav-area">
-            <div class="nav-area-header">
-                <span class="nav-header">EMS</span>
-            </div>
-            <div class="nav-area-content">
-                <ul>
-                    <li>
-                        <iconify-icon class="icon" icon="humbleicons:desktop"
-                        onclick="window.location.href='http://127.0.0.1:5000';"></iconify-icon>
-                        <span class="menue"></span>
-                    </li>
-                    <li>
-                        <iconify-icon class="icon" icon="mdi:chart-line"></iconify-icon>
-                        <span class="menue"></span>
-                    </li>
-                    <li><iconify-icon class="icon" icon="material-symbols:settings" 
-                        onclick="window.location.href='http://127.0.0.1:5000/config';"></iconify-icon>
-                        <span class="menue"></span>
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div class="content-area">
-            <div class="window">
-                <div class="header">
-                    <h1>Energiemanagementsystem</h1>
-                </div>
-                <div class="main">
-                    <div class="chart-box">
-                        <div class="chart1">
-                            <canvas id="chart-awattar"></canvas>
-                        </div>
-                        <div class="chart2">
-                            <canvas id="solar-chart"></canvas>
-                        </div>
-                    </div>
-                    <div class="status-box">
-                        <div class="kachel-row">
-                            <div class="kachel-card">
-                                <div class="pv">PV</div>
-                            </div>
-                            <div class="kachel-card">
-                                <div class="from-grid">from-Grid</div>
-                            </div>
-                            <div class="kachel-card">
-                                <div class="to-grid">to-Grid</div>
-                            </div>
-                            <div class="kachel-card">
-                                <div class="hous-consumption">Consumption</div>
-                            </div>
-                            <div class="kachel-card">
-                                <div class="battery-level">Battery</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="bedien-box">
-                        <div class="buttons-box">
-                            <div class="buttons-grid">
-                                <div class="button-card">
-                                    <div class="mode">Mode</div>
-                                </div>
-                                <div class="button-card">
-                                    <div class="start">
-                                        <button id="lade_start" class="buttons">Start</button>
-                                    </div>
-                                </div>
-                                <div class="button-card">
-                                    <div class="stop">
-                                        <button id="lade_stop" class="buttons">Stop</button>
-                                    </div>
-                                </div>
-                                <div class="button-card">
-                                    <div class="stop">Reserve</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="info-box">Info
-                            <div id="result"></div>
-                        </div>
-                    </div>
+{% extends '/base.html' %}
 
-                </div>
-                <div class="footer">Made by Aleksandr Majer 2024</div>
+{% block header %}<h1>Energiemanagementsystem</h1>{% endblock %}
+
+
+{% block content %}
+    <div class="main">
+        <div class="chart-box">
+            <div class="chart1">
+                <canvas id="chart-awattar"></canvas>
+            </div>
+            <div class="chart2">
+                <canvas id="solar-chart"></canvas>
             </div>
         </div>
-    </div>
+        <div class="status-box">
+            <div class="kachel-row">
+                <div class="kachel-card">
+                    <div class="pv">PV</div>
+                </div>
+                <div class="kachel-card">
+                    <div class="from-grid">from-Grid</div>
+                </div>
+                <div class="kachel-card">
+                    <div class="to-grid">to-Grid</div>
+                </div>
+                <div class="kachel-card">
+                    <div class="hous-consumption">Consumption</div>
+                </div>
+                <div class="kachel-card">
+                    <div class="battery-level">Battery</div>
+                </div>
+            </div>
+        </div>
+        <div class="bedien-box">
+            <div class="buttons-box">
+                <div class="buttons-grid">
+                    <div class="button-card">
+                        <div class="mode">Mode</div>
+                    </div>
+                    <div class="button-card">
+                        <div class="start">
+                            <button id="lade_start" class="buttons">Start</button>
+                        </div>
+                    </div>
+                    <div class="button-card">
+                        <div class="stop">
+                            <button id="lade_stop" class="buttons">Stop</button>
+                        </div>
+                    </div>
+                    <div class="button-card">
+                        <div class="stop">Reserve</div>
+                    </div>
+                </div>
+            </div>
+            <div class="info-box">Info
+                <div id="result"></div>
+            </div>
+        </div>
+    </div>    
+
+
+
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="static\javascript\chart_bar_awattar.js"></script>
@@ -158,12 +125,7 @@
         });
     </script>
 
-
-
-
-
-
-
+{% endblock %}
 
 
 </body>
