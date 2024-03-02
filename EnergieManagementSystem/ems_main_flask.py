@@ -1,11 +1,15 @@
-from flask import Flask, render_template, render_template_string, jsonify, request
+from flask import Flask, render_template, jsonify, request
 from pyModbusTCP.client import ModbusClient
 import time
 import json
 from influxdb_client import InfluxDBClient
 import pytz
 from datetime import datetime
+import requests
+import pandas as pd
+import schedule
 
+# Verbindung zu InfluxDB
 token = "icZDRkYepFHRWLdP5HCzSPRC868TIfhQ4E8JguTQApWpKEpa6CBX1GXaIBKPNt44qQoHSRDJDvNeNMDtSpKq7Q=="
 org = "my-org"
 url = "http://192.168.0.230:8086"
@@ -15,6 +19,7 @@ client = InfluxDBClient(url=url, token=token, org=org)
 
 app = Flask(__name__)
 
+# Homepage
 @app.route("/")
 def start():
     print("Start")
@@ -83,7 +88,7 @@ def data():
     # Daten an javascript html übergeben
     return jsonify(data)
 
-
+#Update für Chart
 @app.route('/update_chart', methods=['POST'])
 def update_chart():
     start_date = request.form['start_date']
@@ -158,6 +163,7 @@ def update_chart():
     data = [timestamps, values_pv, values_fromgrid, values_togrid]
     return jsonify(data)
 
+#Livedaten aus InfluxDB
 @app.route("/pv-leistung")
 def pvleistung():
     global value
@@ -200,6 +206,7 @@ def einspeisung():
 
     return jsonify(value)
 
+#Config Seite
 @app.route("/config", methods=['POST', 'GET'])
 def config():
     if request.method == 'POST':
@@ -225,9 +232,97 @@ def config():
 
     return render_template('config.html')
 
+#Modus Seite
 @app.route("/modus")
 def modus():
     return render_template('modus.html')
+
+
+#Mainfunction automatische Abfrage von Einstrahlungsprognose, Strompreise und Entscheidung
+# PV-Ertragsprognose
+def prognose():
+    # Angeaben zur PV Anlage
+    # allgemeine Angaben
+
+    with open("config.json", "r") as read_file:
+        config_data = json.load(read_file)
+
+    lat = config_data["latitude"]
+    lon = config_data["longitude"]
+    winkel = config_data["winkel"]
+    kwp = config_data["kwp"]
+    url = "https://api.forecast.solar/estimate/watthours/day/"
+    # Himmelsrichtung
+    az1 = config_data["azimuth"]
+    urldaten1 = url + lat + "/" + lon + "/" + winkel + "/" + az1 + "/" + kwp + "?time=utc"
+    # Verarbeitung der Daten
+    anfrage1 = requests.get(urldaten1).text
+    parser1 = json.loads(anfrage1)
+    result1 = parser1["result"]
+    werte = []
+    werte.append(result1)
+    df = pd.DataFrame(werte)
+
+    ertrag_heute = df.iloc[0:3, 0].sum()
+    ertrag_morgen = df.iloc[0:3, 1].sum()
+
+    print("Erwarteter Ertrag heute: ", ertrag_heute/1000, "kWh" "\n" "Erwarteter Ertrag morgen: ", ertrag_morgen/1000, "kWh")
+
+    return ertrag_morgen
+
+
+
+def strompreise():
+    url = "https://api.awattar.de/v1/marketdata"
+    anfrage = requests.get(url).text
+
+    parser = json.loads(anfrage)
+    daten = (parser["data"])
+
+    liste = []
+
+    for datensatz in daten:
+        start_timestamp = datensatz['start_timestamp'] / 1000
+        start_zeit = datetime.fromtimestamp(start_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        end_timestamp = datensatz['end_timestamp'] / 1000
+        end_zeit = datetime.fromtimestamp(end_timestamp).strftime('%Y-%m-%d %H:%M:%S')
+        marketprice = datensatz['marketprice']
+        unit = datensatz['unit']
+        liste.append([start_zeit, end_zeit, marketprice, unit])
+
+    df = pd.DataFrame(liste, columns=["Startzeit", "Endzeit", "Preis", "Währung"])
+
+    bewertung = []
+    for i in df["Preis"]:
+        if i <= 0:
+            bewertung.append("gut")
+        else:
+            bewertung.append("schlecht")
+
+    df['Bewertung'] = bewertung
+
+    print(df)
+
+    # Umrechnung von float64 in int
+    df["Preis"] = df["Preis"]
+    minimum = df["Preis"].min()
+
+
+    # Sortierung erst nach Preis
+    sort = df.sort_values(by=['Preis'])
+    # wie viele Stunden sollen berücksichtigt werden (diese Variable soll über Dashboard eingegeben werden)
+    ladedauer = 1
+    sort_min_preis = sort.head(ladedauer)
+    # Sortierung nach Zeit
+    sort_zeit = sort_min_preis.sort_values(by=['Startzeit'])
+
+
+    uhr1 = sort_zeit["Startzeit"].iloc[0]  # Startzeit zum laden (erste Zeile in der Tabelle)
+    uhr2 = sort_zeit["Endzeit"].iloc[-1]  # Endzeit zum laden (letzte Zeile in der Tabelle)
+
+
+    return minimum, uhr1, uhr2
+
 
 # Diese Funktion schickt ein Befehl an Modbus
 # Beschreibe Modbusregister
@@ -235,8 +330,11 @@ def modus():
 @app.route('/writeModbus_laden', methods=['POST'])
 def writeModbus_laden():
     # Erstelle einen Modbus TCP-Client
-    host = "192.168.0.105"  # Variable für WR-Ip
-    port = 10502  # Variable für port
+    with open("config.json", "r") as read_file:
+        config_data = json.load(read_file)
+
+    host = config_data["Modbus_host"]  # Variable für WR-Ip
+    port = config_data["Modbus_port"]  # Variable für port
     client = ModbusClient(host=host, port=port)
 
     # Stelle eine Verbindung zum Server her
@@ -270,8 +368,11 @@ def writeModbus_laden():
 @app.route('/writeModbus_default', methods=['POST'])
 def writeModbus_default():
     # Erstelle einen Modbus TCP-Client
-    host = "192.168.0.105"  # Variable für WR-Ip
-    port = 10502  # Variable für port
+    with open("config.json", "r") as read_file:
+        config_data = json.load(read_file)
+
+    host = config_data["Modbus_host"]  # Variable für WR-Ip
+    port = config_data["Modbus_port"]  # Variable für port
     client = ModbusClient(host=host, port=port)
 
     # Stelle eine Verbindung zum Server her
@@ -298,6 +399,55 @@ def writeModbus_default():
     client.close()
     result = "Lademodus beendet"
     return jsonify({"result": result})
+
+def main_function():
+    prognose()
+    ertrag = prognose()
+    if ertrag < 150000:
+        print("PV-Ertrag reicht nicht aus um den Speicher zu laden. Prüfe Ladung aus dem Netz")
+        netzdaten = strompreise()
+        strompreis = float(netzdaten[0])
+        ladestart_str = netzdaten[1]
+        ladestop_str = netzdaten[2]
+        ladestart_date = datetime.strptime(ladestart_str, '%Y-%m-%d %H:%M:%S')
+        ladestop_date = datetime.strptime(ladestop_str, '%Y-%m-%d %H:%M:%S')
+        ladestart = datetime.strftime(ladestart_date, '%H:%M:%S')
+        ladestop = datetime.strftime(ladestop_date, '%H:%M:%S')
+        if strompreis < 70.5:
+            print("Günstiges Preis zum Laden entdekt " + str(strompreis) + " am " + str(ladestart_str))
+            print("Starte Ladevorgang am " + str(ladestart_str))
+
+            def task_startladen():
+                writeModbus_laden()
+                print("Ladevorgang gestartet am " + str(ladestart_str) + "um ", datetime.now())
+                return schedule.CancelJob
+
+            schedule.every().day.at(ladestart).do(task_startladen)
+
+            while True:
+                schedule.run_pending()
+                if not schedule.jobs:
+                    break
+                time.sleep(1)
+
+            def task_stopladen():
+                writeModbus_default()
+                print("Ladevorgang beendet am " + str(ladestop_str) + "um " + ladestop)
+                return schedule.CancelJob
+
+            schedule.every().day.at(ladestop).do(task_stopladen) # das könnte man abhängig von SOC Battery beenden
+
+            while True:
+                schedule.run_pending()
+                if not schedule.jobs:
+                    break
+                time.sleep(1)
+        else:
+            print("Strom aus dem Netz ist zu teuer " + str(strompreis))
+    else:
+        print("PV-Ertrag reicht aus um den Speicher zu laden " + str(ertrag))
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
