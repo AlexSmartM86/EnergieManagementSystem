@@ -6,6 +6,7 @@
 
 .screen {
     display: flex;
+
 }
 
 .nav-area {
@@ -80,13 +81,17 @@ h1 {
     padding: 10px;
 }
 
+.datepicker {
+    padding: 10px;
+}
+
 .kachel-row {
     line-height: 50px;
     border: 1px solid;
     display: flex;
     justify-content: space-around;
     padding: 15px 10px;
-    font-size: 30px;
+    font-size: 20px;
 }
 
 .kachel-card {

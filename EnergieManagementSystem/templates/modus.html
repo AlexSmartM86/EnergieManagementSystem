@@ -1,0 +1,97 @@
+{% extends '/base.html' %}
+
+{% block header %}<h1>Modus</h1>{% endblock %}
+
+{% block content %}
+<div class="bedien-box">
+    <div class="buttons-box">
+        <div class="buttons-grid">
+            <div class="button-card">
+                <div class="mode">Mode</div>
+            </div>
+            <div class="button-card">
+                <div class="start">
+                    <button id="lade_start" class="buttons">Start</button>
+                </div>
+            </div>
+            <div class="button-card">
+                <div class="stop">
+                    <button id="lade_stop" class="buttons">Stop</button>
+                </div>
+            </div>
+            <div class="button-card">
+                <div class="stop">Reserve</div>
+            </div>
+        </div>
+    </div>
+    <div class="info-box">Info
+        <div id="result"></div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#lade_start').click(function() {
+            $.ajax({
+                type: 'POST',
+                url: '/writeModbus_laden',
+                success: function(response) {
+                    alert(response.result); // Hier können Sie die Antwort der Python-Funktion verwenden
+                }
+            });
+        });
+    });
+</script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#lade_stop').click(function() {
+            $.ajax({
+                type: 'POST',
+                url: '/writeModbus_default',
+                success: function(response) {
+                    alert(response.result); // Hier können Sie die Antwort der Python-Funktion verwenden
+                }
+            });
+        });
+    });
+</script>
+<script type="text/javascript">
+    document.getElementById('lade_start').addEventListener('click', function() {
+        // AJAX-Anfrage senden
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/writeModbus_laden', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                // Antwort der Python-Funktion in das DOM einfügen
+                document.getElementById('result').innerHTML = response.result;
+            }
+        };
+        xhr.send();
+    });
+</script>
+<script type="text/javascript">
+    document.getElementById('lade_stop').addEventListener('click', function() {
+        // AJAX-Anfrage senden
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '/writeModbus_default', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                // Antwort der Python-Funktion in das DOM einfügen
+                document.getElementById('result').innerHTML = response.result;
+            }
+        };
+        xhr.send();
+    });
+</script>
+
+{% endblock %}
+
+
+</body>
+</html>

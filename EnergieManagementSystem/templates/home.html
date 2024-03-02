@@ -4,126 +4,67 @@
 
 
 {% block content %}
-    <div class="main">
-        <div class="chart-box">
-            <div class="chart1">
-                <canvas id="chart-awattar"></canvas>
+
+    <div class="chart-box">
+        <div class="chart1">
+            <canvas id="chart-awattar" id="chart-awattar" height="100vh"></canvas>
+        </div>
+        <div class="chart2">
+            <canvas id="solar-chart id="solar-chart" height="100vh"></canvas>
+        </div>
+    </div>
+    <div class="status-box">
+        <div class="kachel-row">
+            <div class="kachel-card">
+                <div class="pv" id="pv">PV</div>
             </div>
-            <div class="chart2">
-                <canvas id="solar-chart"></canvas>
+            <div class="kachel-card">
+                <div class="from-grid" id="bezug">from-Grid</div>
+            </div>
+            <div class="kachel-card">
+                <div class="to-grid" id="einspeisung">to-Grid</div>
+            </div>
+            <div class="kachel-card">
+                <div class="hous-consumption">Consumption</div>
+            </div>
+            <div class="kachel-card">
+                <div class="battery-level">Battery</div>
             </div>
         </div>
-        <div class="status-box">
-            <div class="kachel-row">
-                <div class="kachel-card">
-                    <div class="pv">PV</div>
-                </div>
-                <div class="kachel-card">
-                    <div class="from-grid">from-Grid</div>
-                </div>
-                <div class="kachel-card">
-                    <div class="to-grid">to-Grid</div>
-                </div>
-                <div class="kachel-card">
-                    <div class="hous-consumption">Consumption</div>
-                </div>
-                <div class="kachel-card">
-                    <div class="battery-level">Battery</div>
-                </div>
-            </div>
-        </div>
-        <div class="bedien-box">
-            <div class="buttons-box">
-                <div class="buttons-grid">
-                    <div class="button-card">
-                        <div class="mode">Mode</div>
-                    </div>
-                    <div class="button-card">
-                        <div class="start">
-                            <button id="lade_start" class="buttons">Start</button>
-                        </div>
-                    </div>
-                    <div class="button-card">
-                        <div class="stop">
-                            <button id="lade_stop" class="buttons">Stop</button>
-                        </div>
-                    </div>
-                    <div class="button-card">
-                        <div class="stop">Reserve</div>
-                    </div>
-                </div>
-            </div>
-            <div class="info-box">Info
-                <div id="result"></div>
-            </div>
-        </div>
-    </div>    
+    </div>
+    <div class="datepicker">
+        <form id="dateForm">
+            <label for="start_date">Start:</label>
+            <input type="datetime-local" id="start_date" name="start_date">
+
+            <label for="end_date">Ende:</label>
+            <input type="datetime-local" id="end_date" name="end_date">
+
+            <button type="submit">Zeitbereich aktualisieren</button>
+        </form>
+    </div>
+    <div class="main_chart">
+        <canvas class="myChart" id="myChart" height="100vh"></canvas>
+    </div>
 
 
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js/dist/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script src="static\javascript\chart_bar_awattar.js"></script>
     <script src="static\javascript\chart_bar_solar.js"></script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#lade_start').click(function() {
-                $.ajax({
-                    type: 'POST',
-                    url: '/writeModbus_laden',
-                    success: function(response) {
-                        alert(response.result); // Hier können Sie die Antwort der Python-Funktion verwenden
-                    }
-                });
-            });
-        });
-    </script>
-    <script type="text/javascript">
-        $(document).ready(function() {
-            $('#lade_stop').click(function() {
-                $.ajax({
-                    type: 'POST',
-                    url: '/writeModbus_default',
-                    success: function(response) {
-                        alert(response.result); // Hier können Sie die Antwort der Python-Funktion verwenden
-                    }
-                });
-            });
-        });
-    </script>
-    <script type="text/javascript">
-        document.getElementById('lade_start').addEventListener('click', function() {
-            // AJAX-Anfrage senden
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/writeModbus_laden', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    // Antwort der Python-Funktion in das DOM einfügen
-                    document.getElementById('result').innerHTML = response.result;
-                }
-            };
-            xhr.send();
-        });
-    </script>
-    <script type="text/javascript">
-        document.getElementById('lade_stop').addEventListener('click', function() {
-            // AJAX-Anfrage senden
-            var xhr = new XMLHttpRequest();
-            xhr.open('POST', '/writeModbus_default', true);
-            xhr.setRequestHeader('Content-Type', 'application/json');
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    var response = JSON.parse(xhr.responseText);
-                    // Antwort der Python-Funktion in das DOM einfügen
-                    document.getElementById('result').innerHTML = response.result;
-                }
-            };
-            xhr.send();
-        });
-    </script>
+    <script src="static\javascript\bar_chart_influxdb.js"></script>
+    <script src="static\javascript\bar_chart_influxdb_var_time.js"></script>
+    <script src="static\javascript\live_data.js"></script>
+
+
 
 {% endblock %}
 
