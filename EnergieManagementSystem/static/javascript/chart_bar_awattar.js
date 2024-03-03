@@ -1,6 +1,5 @@
 
 var canv = window.document.getElementById("chart-awattar")
-canv.height = 150;
 var context = canv.getContext('2d');
 
 

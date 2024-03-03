@@ -206,6 +206,12 @@ def einspeisung():
 
     return jsonify(value)
 
+
+@app.route("/verbrauch")
+def verbrauch():
+    pass
+
+
 #Config Seite
 @app.route("/config", methods=['POST', 'GET'])
 def config():
