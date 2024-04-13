@@ -95,8 +95,14 @@ def update_chart():
     end_date = request.form['end_date']
 
     # String in ein datetime-Objekt konvertieren
-    timestamp_start = datetime.strptime(start_date, "%Y-%m-%dT%H:%M")
-    timestamp_end = datetime.strptime(end_date, "%Y-%m-%dT%H:%M")
+    timestamp_start_local = datetime.strptime(start_date, "%Y-%m-%dT%H:%M")
+    timestamp_end_local = datetime.strptime(end_date, "%Y-%m-%dT%H:%M")
+
+    # aus der LocalTime in UTC-Time konventieren
+    local_timezone = pytz.timezone('Europe/Berlin')
+    # Umrechnung in lokale Zeit
+    timestamp_start = timestamp_start_local.astimezone(local_timezone)
+    timestamp_end = timestamp_end_local.astimezone(local_timezone)
 
     # Parameter für query
     p = {"_start": timestamp_start,
