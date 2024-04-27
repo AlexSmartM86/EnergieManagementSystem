@@ -218,6 +218,61 @@ def verbrauch():
     pass
 
 
+# Summen der Werte PV, Bezug, Einspeisung
+@app.route("/total_data")
+def total_data():
+    # Vorgabe für Zeitauswahl
+    now = datetime.now()
+    today_start = datetime(now.year, now.month, now.day, 0, 0)
+
+    timestamp_start = today_start
+    timestamp_end = now
+
+    # Parameter für query
+    p = {
+        "_start": timestamp_start,
+        "_end": timestamp_end
+    }
+
+    query_pv = '''from(bucket: "test")
+     |> range(start: _start, stop: _end)
+     |> filter(fn: (r) => r["_measurement"] == "pv.leistung")
+     |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)'''
+    tables_pv = client.query_api().query(query_pv, org="my-org", params=p)
+
+    query_bezug = '''from(bucket: "test")
+    |> range(start: _start, stop: _end)
+    |> filter(fn: (r) => r["_measurement"] == "strom.bezug")
+    |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)'''
+    tables_fromgrid = client.query_api().query(query_bezug, org="my-org", params=p)
+
+    query_einspeisung = '''from(bucket: "test")
+    |> range(start: _start, stop: _end)
+    |> filter(fn: (r) => r["_measurement"] == "strom.einspeisung")
+    |> aggregateWindow(every: 1d, fn: sum, createEmpty: false)'''
+    tables_togrid = client.query_api().query(query_einspeisung, org="my-org", params=p)
+
+    for table in tables_pv:
+        for row in table.records:
+            today_pv = (row.values["_value"] / 60 / 1000).__round__(2)
+            print(f'Heutiger PV Ertrag {today_pv} kWh')
+
+    for table in tables_fromgrid:
+        for row in table.records:
+            today_fromgrid = (row.values["_value"] / 45 / 1000).__round__(2)
+            print(f'Heutiger Bezug aus dem Netz {today_fromgrid} kWh')
+
+    for table in tables_togrid:
+        for row in table.records:
+            today_togrid = (row.values["_value"] / 60 / 1000).__round__(2)
+            print(f'Heutige Einspeisung ins Netz {today_togrid} kWh')
+
+    direct_comsumption = (today_pv + today_togrid).__round__(2)
+    print(f'Direktverbrauchte Energie {direct_comsumption} kWh')
+
+    return jsonify(today_pv, today_fromgrid, today_togrid, direct_comsumption)
+
+
 #Config Seite
 @app.route("/config", methods=['POST', 'GET'])
 def config():
