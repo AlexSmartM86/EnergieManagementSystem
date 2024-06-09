@@ -26,6 +26,72 @@ def start():
 
     return render_template('home.html')
 
+@app.route("/data_five_min") #Chart alle 5 Minuten
+def data_five_min():
+    query_pv = '''from(bucket: "test")
+    |> range(start: -2h)
+    |> filter(fn: (r) => r["_measurement"] == "pv.leistung")
+    |> aggregateWindow(every: 5m, fn: mean)'''
+    tables_pv = client.query_api().query(query=query_pv)
+
+    query_bezug = '''from(bucket: "test")
+    |> range(start: -2h)
+    |> filter(fn: (r) => r["_measurement"] == "strom.bezug")
+    |> aggregateWindow(every: 5m, fn: mean)'''
+    tables_fromgrid = client.query_api().query(query=query_bezug)
+
+    query_einspeisung = '''from(bucket: "test")
+    |> range(start: -2h)
+    |> filter(fn: (r) => r["_measurement"] == "strom.einspeisung")
+    |> aggregateWindow(every: 5m, fn: mean)'''
+    tables_togrid = client.query_api().query(query=query_einspeisung)
+
+    # Daten für den Chart vorbereiten
+    timestamps = []
+    values_pv = []
+    values_fromgrid = []
+    values_togrid = []
+
+    for table in tables_pv:
+        for row in table.records:
+            utc_timestamp = row.values["_time"]
+            local_timezone = pytz.timezone('Europe/Berlin')
+            # Umrechnung in lokale Zeit
+            local_datetime = utc_timestamp.astimezone(local_timezone)
+            # Entfernung UTC info
+            local_datetime = local_datetime.replace(tzinfo=None)
+            local_time = local_datetime.strftime('%Y-%m-%d %H:%M:%S')
+            # es darf nur ein Timestamp existieren, deswegen nur hier
+            timestamps.append(local_time)
+            values_pv.append(row.values["_value"])
+
+    for table in tables_fromgrid:
+        for row in table.records:
+            utc_timestamp = row.values["_time"]
+            local_timezone = pytz.timezone('Europe/Berlin')
+            # Umrechnung in lokale Zeit
+            local_datetime = utc_timestamp.astimezone(local_timezone)
+            # Entfernung UTC info
+            local_datetime = local_datetime.replace(tzinfo=None)
+            local_time = local_datetime.strftime('%Y-%m-%d %H:%M:%S')
+            values_fromgrid.append(row.values["_value"])
+
+    for table in tables_togrid:
+        for row in table.records:
+            utc_timestamp = row.values["_time"]
+            local_timezone = pytz.timezone('Europe/Berlin')
+            # Umrechnung in lokale Zeit
+            local_datetime = utc_timestamp.astimezone(local_timezone)
+            # Entfernung UTC info
+            local_datetime = local_datetime.replace(tzinfo=None)
+            local_time = local_datetime.strftime('%Y-%m-%d %H:%M:%S')
+            values_togrid.append(row.values["_value"])
+
+    data = [timestamps, values_pv, values_fromgrid, values_togrid]
+    # Daten an javascript html übergeben
+    return jsonify(data)
+
+
 @app.route("/data") #Chart
 def data():
     query_pv = '''from(bucket: "test")
