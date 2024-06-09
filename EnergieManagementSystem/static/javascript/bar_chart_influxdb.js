@@ -1,5 +1,5 @@
         // Daten von Flask abrufen
-        fetch('/data')
+        fetch('/data_five_min')
             .then(response => response.json())
             .then(data => {
                 // Extrahiere Timestamps und Werte aus den empfangenen Daten
